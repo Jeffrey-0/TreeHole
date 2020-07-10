@@ -9,6 +9,7 @@ const Wish = () => import('views/wish/Wish')
 const Publish = () => import('views/publish/Publish')
 const Message = () => import('views/message/Message')
 const Profile = () => import('views/profile/Profile')
+const Detail = () => import('views/detail/Detail')
 
 // 2.插件路由对象
 const routes = [
@@ -23,15 +24,22 @@ const routes = [
   {
     path: '/wish',
     component: Wish
-  }, {
+  },
+  {
     path: '/publish',
     component: Publish
-  }, {
+  },
+  {
     path: '/message',
     component: Message
-  }, {
+  },
+  {
     path: '/profile',
     component: Profile
+  },
+  {
+    path: '/detail/:iid',
+    component: Detail
   }
 ]
 

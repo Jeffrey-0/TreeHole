@@ -24,14 +24,15 @@ export default {
     }
   },
   methods: {
-    itemClick (item) {
-      this.currentIndex = item;
+    itemClick (index) {
+      this.currentIndex = index;
+      this.$emit('tabClick', index)
     }
   }
 }
 </script>
 
-<style>
+<style scoped>
   .tab-control {
     display: flex;
     height: 30px;
