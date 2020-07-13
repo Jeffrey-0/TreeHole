@@ -14,3 +14,36 @@ export function getHomeGoods (type, page) {
     }
   })
 }
+
+export function getHomeSecrets (currentPage, pageSize = 6) {
+  return request({
+    url: '/home/public',
+    params: {
+      currentPage,
+      pageSize
+    }
+  })
+}
+
+export function getHotSecrets (currentPage, pageSize = 6) {
+  return request({
+    url: '/home/hot',
+    params: {
+      currentPage,
+      pageSize
+    }
+  })
+}
+
+export function getFriendsSecrets (currentPage, pageSize = 6) {
+  return request({
+    url: '/home/friendship',
+    params: {
+      currentPage,
+      pageSize
+    },
+    headers: {
+      accessToken: 'adb78664-e8b8-4683-9c05-23ffcfd697fa'
+    }
+  })
+}

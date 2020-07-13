@@ -4,6 +4,8 @@ import router from './router'
 import toast from 'components/common/toast'
 import FastClick from 'fastclick'
 import VueLazyLoad from 'vue-lazyload'
+import { getYYYYMMDDMMSS } from 'common/utils'
+import { imageBaseUrl } from 'common/const'
 
 Vue.config.productionTip = false
 // 添加事件总线对象
@@ -23,3 +25,6 @@ FastClick.attach(document.body)
 Vue.use(VueLazyLoad, {
   loading: require('assets/img/default/user.jpg')
 })
+
+Vue.prototype.$imageBaseUrl = imageBaseUrl
+Vue.prototype.$formatTime = getYYYYMMDDMMSS

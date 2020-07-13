@@ -1,10 +1,6 @@
 import { request } from './request'
-export function getDetail () {
+export function getDetail (iid) {
   return request({
-    url: '/home/multidata'
-    // ,
-    // params: {
-    //   iid
-    // }
+    url: 'secret/' + iid
   })
 }

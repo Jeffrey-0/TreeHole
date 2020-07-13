@@ -11,7 +11,7 @@
             @scroll="contentScroll"
             @pullingUp="loadMore"
             >
-      <goods-list :goods="recommends.list"></goods-list>
+      <goods-list :goods="showGoods"></goods-list>
     </scroll>
     <back-top @click.native="backClick" v-show="isShowBackTop"></back-top>
     <!-- <goods-list :goods="showGoods"></goods-list> -->
@@ -26,7 +26,7 @@ import TabControl from 'components/content/tabControl/TabControl'
 import GoodsList from 'components/content/goods/GoodsList'
 
 
-import { getHomeMultidata, getHomeGoods } from "network/home"
+import { getHomeMultidata, getHomeGoods, getHomeSecrets, getHotSecrets, getFriendsSecrets } from "network/home"
 import { debounce } from 'common/utils'
 
 export default {
@@ -47,7 +47,13 @@ export default {
         'news': {page: 0, list: []},
         'sell': {page: 0, list: []}
       },
-      currentType: 'pop',
+      // 秘密
+      secrets: {
+        'new': {page: 0, list: []},
+        'hot': {page: 0, list: []},
+        'friends': {page: 0, list: []}
+      },
+      currentType: 'new',
       isShowBackTop: false,
       tabOffsetTop: 0,
       saveY: -200
@@ -55,16 +61,19 @@ export default {
   },
   computed: {
     showGoods () {
-      return this.goods[this.currentType].list
+      return this.secrets[this.currentType].list
     }
   },
   created () {
     // 1.请求多个数据
-    this.getHomeMultidata()
-    // 2.请求商品数据
-    this.getHomeGoods('pop')
-    this.getHomeGoods('news')
-    this.getHomeGoods('sell')
+    // this.getHomeMultidata()
+    // // 2.请求商品数据
+    // this.getHomeGoods('pop')
+    // this.getHomeGoods('news')
+    // this.getHomeGoods('sell')
+    this.getHomeSecrets()
+    this.getHotSecrets()
+    this.getFriendsSecrets()
   },
   destroyed () {
     console.log('home destroyed')
@@ -93,17 +102,16 @@ export default {
       // console.log(index)
       switch (index) {
         case 0:
-          this.currentType = 'pop'
-          break
-        case 1:
           this.currentType = 'new'
           break
+        case 1:
+          this.currentType = 'hot'
+          break
         case 2:
-          this.currentType = 'sell'
+          this.currentType = 'friends'
            break;
       }
     },
-
     getHomeMultidata () {
       getHomeMultidata().then(res => {
         console.log(res)
@@ -112,9 +120,36 @@ export default {
       })
     },
     getHomeGoods (type) {
-      getHomeGoods(type, this.goods[type].page + 1).then(res => {
+      getHomeGoods(type, this.goods[type].page ++).then(res => {
         // 接口错误
         console.log(res)
+        // this.goods[type].list.push(...res.data.list)
+      })
+    },
+    // 获取最新下一页的秘密
+    getHomeSecrets () {
+      getHomeSecrets(++this.secrets.new.page).then(res => {
+        // console.log(res)
+        this.secrets.new.list.push(...res.content);
+        // console.log(this.secrets.new.list);
+        // this.goods[type].list.push(...res.data.list)
+      })
+    },
+    // 获取热门下一页的秘密
+    getHotSecrets () {
+      getHotSecrets(++this.secrets.hot.page).then(res => {
+        // console.log(res)
+        this.secrets.hot.list.push(...res.content);
+        console.log(this.secrets.hot.list);
+        // this.goods[type].list.push(...res.data.list)
+      })
+    },
+    // 获取关注下一页的秘密
+    getFriendsSecrets () {
+      getFriendsSecrets(++ this.secrets.friends.page).then(res => {
+        // console.log(res)
+        this.secrets.friends.list.push(...res.content);
+        console.log(this.secrets.friends.list);
         // this.goods[type].list.push(...res.data.list)
       })
     },
@@ -129,7 +164,8 @@ export default {
     },
     loadMore () {
       // this.getHomeGoods(this.currentType)
-      console.log('上拉')
+      // console.log('上拉')
+      this.getHomeSecrets ()
       // this.getHomeMultidata2()
       this.$refs.scroll && this.$refs.scroll.scroll.finishPullUp()
       // this.$refs.scroll.scroll.refresh()

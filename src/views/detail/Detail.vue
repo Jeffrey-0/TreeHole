@@ -6,28 +6,25 @@
     </nav-bar>
     <scroll ref="scroll" class="content">
       <div class="user">
-        <img class="portrait" src="~assets/img/default/user.jpg" alt="" >
-        <span class="username">小疯子</span>
+        <img v-if="secret.user.portrait" class="portrait" :src="showPortrait" alt="" >
+        <img v-else class="portrait" src="~assets/img/default/user.jpg" alt="">
+        <span class="username">{{ secret.user.userName }}</span>
         <span class="watch">关注</span>
         <!-- <span class="watched">已关注</span>  -->
-        <span class="time">2020-07-09 19:00</span>
+        <span class="time">{{ showTime }}</span>
       </div>
       <div>
-        <p>文本（text），从词源上来说，它表示编织的东西。这与中国“文”的概念颇有类似之处。“文”取象人形，指纹身，指花纹。《说文解字叙》称：“仓颉初作书，盖依类象形，故曰文。”“文者，物象之本。”物象均具纹路色彩，因以“文”来指称。《周易·系辞下》记伏羲氏“观鸟兽之文”，鸟兽身上的花纹彩羽。该书又载“物相杂故曰文”，物体的形状、线条色彩相互交错，这也是文。“观乎天文，以察时变，观乎人文，以化成天下。”《说文解字》解释“文”为“错画也。”</p>
+        <p>{{  secret.content }}</p>
       </div>
-      <div  v-if="goods">
-        <div v-for="(item, index) in goods.list" :key="index">
-            <img class="photo" v-lazy="item.image" alt="" @load="imageLoad">
+      <div  v-if="secret">
+        <div v-for="(item, index) in secret.pictures" :key="index">
+            <img class="photo" v-lazy="$imageBaseUrl + item.imgUrl" alt="" @load="imageLoad">
         </div>
-<!--         
-        <img class="photo" v-lazy="goods.list[1].image" alt="" @load="imageLoad">
-        <img class="photo" v-lazy="goods.list[2].image" alt="" @load="imageLoad"> -->
-        <!-- <img class="photo" v-lazy="~assets/img/default/user.jpg" alt="" @load="imageLoad"> -->
       </div>
       <div class="interact">
         <span class="report" @click="reportClick">举报</span>
-        <span class="comment">20</span>
-        <span class="comfort">20</span>
+        <span class="comment">{{ secret.comments.length }}</span>
+        <span class="comfort">{{ secret.likes.length }}</span>
       </div>
       <div class="commentList">
         <li>小疯子:犀利犀利</li>
@@ -55,7 +52,13 @@ export default {
   data () {
     return {
       iid: null,
-      goods: {}
+      goods: {},
+      secret: {
+        user: {},
+        likes: [],
+        comments: [],
+        pictures: []
+      }
     }
   },
   components: {
@@ -65,9 +68,9 @@ export default {
   created () {
     this.iid = this.$route.params.iid
     console.log(this.$route.params.iid)
-    getDetail().then(res => {
+    getDetail(this.iid).then(res => {
       console.log(res)
-      this.goods = res.data.recommend
+      this.secret = res
     })
     // getHomeMultidata().then(res => {
     //     console.log(res)
@@ -87,6 +90,14 @@ export default {
     reportClick () {
       console.log('举报')
       this.$toast.show('举报成功', 1000)
+    }
+  },
+  computed: {
+    showTime () {
+      return this.$formatTime(this.secret.createTime)
+    },
+    showPortrait () {
+      return this.$imageBaseUrl + this.secret.user.portrait
     }
   }
 }
