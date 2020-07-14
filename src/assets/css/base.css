@@ -2,7 +2,7 @@
 /* :root -> 获取根元素html */
 :root {
   --color-text: #666;
-  --color-high-text: #ff5777;
+  --color-high-text: #dd5777;
   /* --color-tint: #ff8198; */
   --color-tint: #8f8f8f;
   --color-background: #fff;

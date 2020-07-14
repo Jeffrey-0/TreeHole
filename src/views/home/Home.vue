@@ -1,6 +1,6 @@
 <template>
   <div id="home">
-    <nav-bar class="home-nav"><div slot="center">广场</div></nav-bar>
+    <nav-bar class="home-nav"><div slot="center">秘密广场</div></nav-bar>
     <!-- <div>搜索</div> -->
     <tab-control class="home-tab" :titles="['最新', '热门', '关注']" @tabClick="tabClick" ref="tabControl"
     ></tab-control>
@@ -11,7 +11,7 @@
             @scroll="contentScroll"
             @pullingUp="loadMore"
             >
-      <goods-list :goods="showGoods"></goods-list>
+      <goods-list :goods="showGoods" v-if="showGoods"></goods-list>
     </scroll>
     <back-top @click.native="backClick" v-show="isShowBackTop"></back-top>
     <!-- <goods-list :goods="showGoods"></goods-list> -->
@@ -73,7 +73,10 @@ export default {
     // this.getHomeGoods('sell')
     this.getHomeSecrets()
     this.getHotSecrets()
-    this.getFriendsSecrets()
+    if (this.$user.accessToken) {
+      this.getFriendsSecrets()
+    }
+    
   },
   destroyed () {
     console.log('home destroyed')
@@ -122,6 +125,9 @@ export default {
     getHomeGoods (type) {
       getHomeGoods(type, this.goods[type].page ++).then(res => {
         // 接口错误
+        if (!res) {
+          return
+        }
         console.log(res)
         // this.goods[type].list.push(...res.data.list)
       })
@@ -130,6 +136,9 @@ export default {
     getHomeSecrets () {
       getHomeSecrets(++this.secrets.new.page).then(res => {
         // console.log(res)
+        if (!res) {
+          return
+        }
         this.secrets.new.list.push(...res.content);
         // console.log(this.secrets.new.list);
         // this.goods[type].list.push(...res.data.list)
@@ -139,6 +148,9 @@ export default {
     getHotSecrets () {
       getHotSecrets(++this.secrets.hot.page).then(res => {
         // console.log(res)
+        if (!res) {
+          return
+        }
         this.secrets.hot.list.push(...res.content);
         console.log(this.secrets.hot.list);
         // this.goods[type].list.push(...res.data.list)
@@ -146,8 +158,11 @@ export default {
     },
     // 获取关注下一页的秘密
     getFriendsSecrets () {
-      getFriendsSecrets(++ this.secrets.friends.page).then(res => {
+      getFriendsSecrets(this.$user.accessToken, ++ this.secrets.friends.page).then(res => {
         // console.log(res)
+        if (!res) {
+          return
+        }
         this.secrets.friends.list.push(...res.content);
         console.log(this.secrets.friends.list);
         // this.goods[type].list.push(...res.data.list)
@@ -165,7 +180,13 @@ export default {
     loadMore () {
       // this.getHomeGoods(this.currentType)
       // console.log('上拉')
-      this.getHomeSecrets ()
+      if (this.currentType === 'new') {
+        this.getHomeSecrets()
+      } else if (this.currentType === 'hot') {
+        this.getHotSecrets()
+      } else {
+        this.getFriendsSecrets()
+      }
       // this.getHomeMultidata2()
       this.$refs.scroll && this.$refs.scroll.scroll.finishPullUp()
       // this.$refs.scroll.scroll.refresh()

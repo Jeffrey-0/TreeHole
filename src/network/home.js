@@ -15,6 +15,7 @@ export function getHomeGoods (type, page) {
   })
 }
 
+// 查看最新秘密
 export function getHomeSecrets (currentPage, pageSize = 6) {
   return request({
     url: '/home/public',
@@ -25,6 +26,7 @@ export function getHomeSecrets (currentPage, pageSize = 6) {
   })
 }
 
+// 查看热门秘密
 export function getHotSecrets (currentPage, pageSize = 6) {
   return request({
     url: '/home/hot',
@@ -35,7 +37,8 @@ export function getHotSecrets (currentPage, pageSize = 6) {
   })
 }
 
-export function getFriendsSecrets (currentPage, pageSize = 6) {
+// 查看关注秘密
+export function getFriendsSecrets (accessToken, currentPage, pageSize = 6) {
   return request({
     url: '/home/friendship',
     params: {
@@ -43,7 +46,7 @@ export function getFriendsSecrets (currentPage, pageSize = 6) {
       pageSize
     },
     headers: {
-      accessToken: 'adb78664-e8b8-4683-9c05-23ffcfd697fa'
+      accessToken: accessToken
     }
   })
 }

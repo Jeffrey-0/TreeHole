@@ -17,7 +17,7 @@
       <tab-bar-item path="/message">
         <img slot="item-icon" src="~assets/img/tabbar/message.svg" alt />
         <img slot="item-icon-active" src="~assets/img/tabbar/message_a.svg" alt />
-        <div slot="item-text">消息</div>
+        <div slot="item-text">好友</div>
       </tab-bar-item>
       <tab-bar-item path="/profile">
         <img slot="item-icon" src="~assets/img/tabbar/mine.svg" alt />

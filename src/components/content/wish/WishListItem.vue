@@ -1,48 +1,32 @@
 <template>
-  <div class="GoodsListItem">
+  <div class="WishListItem">
     <div>
-      <img  class="portrait" :src="showPortrait" alt="" @load="imageLoad" @click="portraitClick">
+      <img v-if="wishItem.user.portrait" class="portrait" :src="showPortrait" alt="" @load="imageLoad" @click="portraitClick">
+      <img v-else class="portrait" src="~assets/img/default/user.jpg" alt="" @load="imageLoad" @click="portraitClick">
       <span class="username" @click="portraitClick">{{showUserName}}</span>
-      <span v-if="follow === 0 && this.goodsItem.status !== 1" class="watch" @click="followClick">关注</span>
-      <span v-else-if="follow === 1 && this.goodsItem.status !== 1" class="watched" @click="followClick">已关注</span>
-      <!-- <img class="photo" :src="goodsItem.image" alt="" @load="imageLoad"> -->
-      <span v-for="(item, index) in goodsItem.pictures" :key="item.id">
-          <img class="photo" :src="imageBaseUrl + item.imgUrl" alt="" @load="imageLoad"  @click="imageClick(index)">
-      </span>
-    </div>
-    <div>
-      <p @click="contentClick">{{goodsItem.content}}</p>
-    </div>
-    <div>
-    </div>
-    <div>
+      <span v-if="follow === 0" class="watch" @click="followClick">关注</span>
+      <span v-else-if="follow === 1" class="watched" @click="followClick">已关注</span>
       <span class="time">{{showTime}}</span>
-      <span class="report" @click="reportClick">举报</span>
-      <span class="comment" @click="commentClick">{{goodsItem.comments.length}}</span>
-      <span class="comfort" @click="likeClick" :class="{like :like}">{{goodsItem.likes.length}}</span>
     </div>
-    
-    <comment-list v-if="commentShow" :comments="goodsItem.comments" :secretId="goodsItem.id"></comment-list>
-
+    <div>
+      <p>{{wishItem.content}}</p>
+    </div>
+    <div>
+    </div>
   </div>
 </template>
 
 <script>
-import CommentList from 'components/content/comment/CommentsList'
-import { like, dislike } from "network/like"
 import { follow, disfollow } from "network/follow"
 export default {
-  name: 'GoodsListItem',
+  name: 'WishListItem',
   props: {
-    goodsItem: {
+    wishItem: {
       type: Object,
       default () {
         return {}
       }
     }
-  },
-  components: {
-    CommentList
   },
   data () {
     return {
@@ -58,12 +42,12 @@ export default {
       this.$bus.$emit('itemImageLoad')
     },
     itemClick () {
-      this.$router.push('/detail/' + this.goodsItem.sort)
+      this.$router.push('/detail/' + this.wishItem.sort)
     },
     // 点击头部或名称
     portraitClick () {
-      if (this.goodsItem.status !== 1) {
-        this.$router.replace('/profile/' + this.goodsItem.user.id)
+      if (this.wishItem.status !== 1) {
+        this.$router.replace('/profile/' + this.wishItem.user.id)
       }
     },
     // 点击关注
@@ -74,49 +58,20 @@ export default {
       }
       console.log('点击关注')
       if (this.follow === 0) {
-        follow(this.$user.accessToken, this.goodsItem.user.id).then(res => {
+        follow(this.$user.accessToken, this.wishItem.user.id).then(res => {
           if (!res) return 
           this.follow = 1
         })
       } else if (this.follow === 1) {
-        disfollow(this.$user.accessToken, this.goodsItem.user.id).then(res => {
+        disfollow(this.$user.accessToken, this.wishItem.user.id).then(res => {
           if (!res) return  
           this.follow = 0
         })
       }
     },
-    // 点击图片
-    imageClick (i) {
-      console.log('显示图片' + i)
-    },
     // 点击内容
     contentClick () {
-      this.$router.push('/detail/' + this.goodsItem.id)
-    },
-    // 点击评论
-    commentClick () {
-      console.log('显示评论')
-      this.commentShow = !this.commentShow
-    },
-    // 点赞
-    likeClick () {
-      if (!this.$user.accessToken) {
-        this.$toast.show('请先登录')
-        return
-      }
-      if (this.like) {
-        dislike(this.$user.accessToken, this.goodsItem.id).then(res => {
-          console.log(res)
-          this.like = false
-          this.goodsItem.likes.length --
-        })
-      } else {
-        like(this.$user.accessToken, this.goodsItem.id).then(res => {
-          console.log(res)
-          this.like = true
-          this.goodsItem.likes.length ++
-        })
-      }
+      this.$router.push('/detail/' + this.wishItem.id)
     },
     // 点击举报
     reportClick () {
@@ -129,11 +84,11 @@ export default {
     },
     // 查看是否关注该秘密的用户
     findFollow () {
-      if (this.$user.id === this.goodsItem.user.id) {
+      if (this.$user.id === this.wishItem.user.id) {
         return 0
       }
       let friend = this.$user.friends.map(function (a) {
-        return a.id === this.goodsItem.user.id
+        return a.id === this.wishItem.user.id
       })
       if (!friend) {
         return 1
@@ -147,36 +102,34 @@ export default {
         return
     }
     // 查看关注
-    if (this.$user.id === this.goodsItem.user.id) {
+    if (this.$user.id === this.wishItem.user.id) {
       this.follow = 2
     } else if(this.$user.friends.filter((item) => {
-      return item.id === this.goodsItem.user.id
+      return item.id === this.wishItem.user.id
     }).length > 0) {
       this.follow = 1
-    }
-    // 查看点赞
-    if (this.goodsItem.likes.filter((item) => {
-      return item.id === this.$user.id
-    }).length > 0) {
-      this.like = true
     }
   },
   computed: {
     showTime () {
-      return this.$formatTime(this.goodsItem.createTime)
+      return this.$formatTime(this.wishItem.createTime)
     },
+    // showPortrait () {
+    //   return this.imageBaseUrl + this.wishItem.user.portrait 
+    // }
+    // ,
     showPortrait () {
-      return this.goodsItem.user.portrait && this.goodsItem.status === 0  ? this.$imageBaseUrl + this.goodsItem.user.portrait : require('assets/img/default/user.jpg')
+      return this.wishItem.user.portrait && this.wishItem.status === 0  ? this.$imageBaseUrl + this.wishItem.user.portrait : require('assets/img/default/user.jpg')
     },
     showUserName () {
-      return this.goodsItem.status === 1 ? '匿名' : this.goodsItem.user.userName
+      return this.wishItem.status === 1 ? '匿名' : this.wishItem.user.userName
     }
   }
 }
 </script>
 
 <style scoped>
-  .GoodsListItem {
+  .WishListItem {
     padding: 10px;
     border-top: 10px solid #f2f2f2;
   }
@@ -234,5 +187,9 @@ export default {
   }
   .like::before {
     background-image: url(~assets/img/public/love_a.svg);
+  }
+  .time {
+    float: right;
+    margin-right: 15px;
   }
 </style>
