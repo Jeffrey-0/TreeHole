@@ -1,8 +1,10 @@
 <template>
+
   <div id="app">
-    <!-- <keep-alive exclude="Detail"> -->
+    <div class="login_a">
+      <a href="/login">登录</a>
+    </div>
       <keep-alive exclude="Profile,Detail">
-      <!-- Detail  Profile-->
       <router-view></router-view>
     </keep-alive>
     <main-tab-bar></main-tab-bar>
@@ -21,4 +23,13 @@ export default {
 
 <style>
 @import "./assets/css/base.css";
+.login_a {
+  z-index: 100;
+  position: fixed;
+  top: 0;
+  right: 0;
+  line-height: 40px;
+  padding: 0px 5px;
+  /* padding: 10px; */
+}
 </style>

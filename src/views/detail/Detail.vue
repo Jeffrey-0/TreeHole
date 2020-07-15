@@ -52,7 +52,7 @@ export default {
         comments: [],
         pictures: []
       },
-      follow: 1,
+      follow: 0,
       like: false
     }
   },
@@ -145,13 +145,16 @@ export default {
     },
     // 查看是否关注该秘密的用户
     findFollow () {
+      if (this.$user.id === null) {
+        return 2
+      }
       if (this.$user.id === this.secret.user.id) {
         return 0
       }
-      let friend = this.$user.friends.map(function (a) {
+      let friend = this.$user.friends.filter(function (a) {
         return a.id === this.secret.user.id
       })
-      if (!friend) {
+      if (friend.length > 0) {
         return 1
       }
       return 2

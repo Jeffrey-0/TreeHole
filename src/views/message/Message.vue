@@ -67,7 +67,11 @@ export default {
   created () {
     console.log(this.$user.friends)
     this.userlist = this.$user.friends
-  }
+    if (!this.$user.accessToken) {
+        this.$toast.show('未登录，请先登录')
+        return
+      }
+    }
 }
 </script>
 

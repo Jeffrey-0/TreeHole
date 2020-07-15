@@ -62,6 +62,10 @@ export default {
   },
   methods: {
     submit () {
+      if (!this.$user.accessToken) {
+        this.$toast.show('未登录，请先登录')
+        return
+      }
       console.log('提交', this.content, this.pictures, this.status)
       if (this.type === '0') {
         createSecret(this.$user.accessToken, this.content, this.status).then(res => {
@@ -91,6 +95,13 @@ export default {
     },
     uploadP (res) {
       console.log(res)
+    }
+  },
+  created () {
+    
+    if (!this.$user.accessToken) {
+        this.$toast.show('未登录，请先登录')
+        return
     }
   }
 }

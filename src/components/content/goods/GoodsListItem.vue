@@ -77,11 +77,15 @@ export default {
         follow(this.$user.accessToken, this.goodsItem.user.id).then(res => {
           if (!res) return 
           this.follow = 1
+          let newUser = res
+          this.$user.friends.push(newUser)
+          console.log(this.$user, res)
         })
       } else if (this.follow === 1) {
         disfollow(this.$user.accessToken, this.goodsItem.user.id).then(res => {
-          if (!res) return  
+          if (!res) return
           this.follow = 0
+          console.log(this.$user.friends, res)
         })
       }
     },

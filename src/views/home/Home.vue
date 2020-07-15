@@ -10,6 +10,7 @@
             :pull-up-load="true"
             @scroll="contentScroll"
             @pullingUp="loadMore"
+            @pullingDown="refresh"
             >
       <goods-list :goods="showGoods" v-if="showGoods"></goods-list>
     </scroll>
@@ -128,6 +129,7 @@ export default {
         if (!res) {
           return
         }
+        // this.$refs.scroll.refresh()
         console.log(res)
         // this.goods[type].list.push(...res.data.list)
       })
@@ -140,6 +142,7 @@ export default {
           return
         }
         this.secrets.new.list.push(...res.content);
+        // this.$refs.scroll.refresh()
         // console.log(this.secrets.new.list);
         // this.goods[type].list.push(...res.data.list)
       })
@@ -153,6 +156,7 @@ export default {
         }
         this.secrets.hot.list.push(...res.content);
         console.log(this.secrets.hot.list);
+        // this.$refs.scroll.refresh()
         // this.goods[type].list.push(...res.data.list)
       })
     },
@@ -165,6 +169,7 @@ export default {
         }
         this.secrets.friends.list.push(...res.content);
         console.log(this.secrets.friends.list);
+        // this.$refs.scroll.refresh()
         // this.goods[type].list.push(...res.data.list)
       })
     },
@@ -191,6 +196,9 @@ export default {
       this.$refs.scroll && this.$refs.scroll.scroll.finishPullUp()
       // this.$refs.scroll.scroll.refresh()
       
+    },
+    refresh () {
+      console.log('下拉刷新')
     }
   }
 }

@@ -1,6 +1,7 @@
 <template>
   <div id="home">
     <nav-bar class="home-nav"><div slot="center">个人</div></nav-bar>
+    
     <!-- <div>搜索</div> -->
     <div class="usermessage">
       <img class="userhead" :src="showPortrait" alt="">
@@ -174,6 +175,10 @@ export default {
     },
     // 获取我的秘密
     getMeSecretsByPage () {
+      if (!this.$user.accessToken) {
+        this.$toast.show('未登录，请先登录')
+        return
+      }
       getMeSecretsByPage(this.$user.accessToken, ++this.secrets.currentPage).then(res => {
         if (!res) {
           return
@@ -182,6 +187,10 @@ export default {
       })
     },
     getMeWishsByPage () {
+      if (!this.$user.accessToken) {
+        this.$toast.show('未登录，请先登录')
+        return
+      }
       getMeWishsByPage(this.$user.accessToken, ++this.wishs.currentPage).then(res => {
         if (!res) {
           return

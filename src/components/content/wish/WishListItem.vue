@@ -4,8 +4,8 @@
       <img v-if="wishItem.user.portrait" class="portrait" :src="showPortrait" alt="" @load="imageLoad" @click="portraitClick">
       <img v-else class="portrait" src="~assets/img/default/user.jpg" alt="" @load="imageLoad" @click="portraitClick">
       <span class="username" @click="portraitClick">{{showUserName}}</span>
-      <span v-if="follow === 0" class="watch" @click="followClick">关注</span>
-      <span v-else-if="follow === 1" class="watched" @click="followClick">已关注</span>
+      <span v-if="follow === 0 && wishItem.status !== 1" class="watch" @click="followClick">关注</span>
+      <span v-else-if="follow === 1 && wishItem.status !== 1" class="watched" @click="followClick">已关注</span>
       <span class="time">{{showTime}}</span>
     </div>
     <div>
